@@ -12,17 +12,21 @@ public class GameController
 	private String $cpuChoice;
 	private boolean $started;
 	public GameConsole $console;
-	public Scanner $Scanner;
-	public int $playerAnswer;
+	public String $playerAnswer;
 	public String $initializeMessage;
+	public Boolean $playerWin;
+	public int $score;
+	public int $losses;
+	public int $games;
+	public Scanner $scanner;
+	int timesDone = 0;
 
 	public GameController()
 	{
 		$cpu = new String[3];
 		$player = new String[3];
 		$started = false;
-		$Scanner = new Scanner(System.in);
-		$console = new GameConsole($Scanner);
+		$scanner = new Scanner(System.in);
 	}
 
 	public void start()
@@ -45,8 +49,8 @@ public class GameController
 
 	public void initilizeGame()
 	{
-		$initializeMessage = "Welcome to teh awesome rock, paper, scissors game. 0 is rock, 1 is paper, and 2 is scissors";
-		$console.Output($initializeMessage);
+		$initializeMessage = "Welcome to teh awesome rock, paper, scissors game.";
+		System.out.println($initializeMessage);
 		$started = true;
 	}
 
@@ -59,6 +63,9 @@ public class GameController
 		while ($started == true)
 		{
 			randomCPUChoice();
+			System.out.println($cpuChoice);
+			$playerAnswer = $scanner.nextLine();
+			$playerWin = checkPlayerInput($playerAnswer);
 			checkConditions();
 
 		}
@@ -66,7 +73,8 @@ public class GameController
 
 	public String randomCPUChoice()
 	{
-		$cpuChoice = $cpu[(int) Math.random() * 3];
+		int randomInt = (int) Math.random() * 3;
+		$cpuChoice = $cpu[randomInt];
 
 		return $cpuChoice;
 	}
@@ -78,18 +86,127 @@ public class GameController
 
 	public void checkConditions()
 	{
-		$playerAnswer = $console.checkPlayerInput();
+		if ($playerWin == true)
+		{
+			$score++;
+			$games++;
+			System.out.println("Your score: " + $score);
+			System.out.println("Your loses: " + $losses);
+			System.out.println("Your total number of games: " + $games);
 
-		try
-		{
-			if ($player[$playerAnswer] == $cpuChoice)
-			{
-				$console.Output("We Match" + $cpuChoice);
-			}
-		} catch (NumberFormatException nFE)
-		{
-			$console.Output("Na m8, use ints");
 		}
-		whileInGame();
+		if ($playerWin == false)
+		{
+			$losses++;
+			$games++;
+			System.out.println("Your score: " + $score);
+			System.out.println("Your loses: " + $losses);
+			System.out.println("Your total number of games: " + $games);
+
+		}
+	}
+
+	public String get$RandomCPUChoice()
+	{
+		return $cpuChoice;
+	}
+
+	public boolean checkPlayerInput(String $playerChoiceTemp)
+	{
+
+		boolean $playerWin = false;
+		boolean $unrecognizable = false;
+		boolean $usefullChoice = false;
+		timesDone = 0;
+
+		while ($usefullChoice == false && $unrecognizable == false)
+		{
+			if ($playerChoiceTemp.equalsIgnoreCase("rock") && $cpuChoice == "rock")
+			{
+				System.out.println("we tie.");
+				$playerWin = false;
+				$unrecognizable = true;
+				$usefullChoice = true;
+
+			}
+			if ($playerChoiceTemp.equalsIgnoreCase("paper") && $cpuChoice == "paper")
+			{
+				System.out.println("we tie.");
+				$playerWin = false;
+				$unrecognizable = true;
+				$usefullChoice = true;
+
+			}
+			if ($playerChoiceTemp.equalsIgnoreCase("scissors") && $cpuChoice == "scissors")
+			{
+				System.out.println("we tie.");
+				$unrecognizable = true;
+				$playerWin = false;
+				$usefullChoice = true;
+
+			}
+			if ($playerChoiceTemp.equalsIgnoreCase("rock") && $cpuChoice == "scissors")
+			{
+				System.out.println("you win.");
+				$playerWin = true;
+				$unrecognizable = true;
+				$usefullChoice = true;
+			}
+			if ($playerChoiceTemp.equalsIgnoreCase("paper") && $cpuChoice == "rock")
+			{
+				System.out.println("you win.");
+				$playerWin = true;
+				$unrecognizable = true;
+				$usefullChoice = true;
+			}
+			if ($playerChoiceTemp.equalsIgnoreCase("scissors") && $cpuChoice == "paper")
+			{
+				System.out.println("you win.");
+				$playerWin = true;
+				$unrecognizable = true;
+				$usefullChoice = true;
+			}
+			if ($playerChoiceTemp.equalsIgnoreCase("scissors") && $cpuChoice == "rock")
+			{
+				System.out.println("you lose.");
+				$playerWin = false;
+				$unrecognizable = true;
+				$usefullChoice = true;
+			}
+			if ($playerChoiceTemp.equalsIgnoreCase("paper") && $cpuChoice == "scissors")
+			{
+				System.out.println("you lose.");
+				$playerWin = false;
+				$unrecognizable = true;
+				$usefullChoice = true;
+			}
+			if ($playerChoiceTemp.equalsIgnoreCase("rock") && $cpuChoice == "paper")
+			{
+				System.out.println("you lose.");
+				$playerWin = false;
+				$unrecognizable = true;
+				$usefullChoice = true;
+			}
+			if (!$playerChoiceTemp.equalsIgnoreCase("rock") || !$playerChoiceTemp.equalsIgnoreCase("rock") || !$playerChoiceTemp.equalsIgnoreCase("scissors") && $usefullChoice == false)
+			{
+				$unrecognizable = true;
+				$usefullChoice = false;
+				failedTest();
+				
+			}
+			if($usefullChoice == true && $unrecognizable == false)
+			{
+				whileInGame();
+			}
+		}
+
+		return $playerWin;
+	}
+
+	public void failedTest()
+	{
+		System.out.println("Please input something the computer can recognize");
+		$playerAnswer = $scanner.nextLine();
+		checkPlayerInput($playerAnswer);
 	}
 }
